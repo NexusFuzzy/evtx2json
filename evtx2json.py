@@ -257,7 +257,10 @@ def process_files(args):
                 except Exception:
                     error_counter += 1
                 else:
-                    logger.info(json.loads(json.dumps(output['Event'])))
+                    # logger.info(json.loads(json.dumps(output['Event'])))
+                    if args.output:
+                        with open(args.output, "a") as myfile:
+                            myfile.write(json.dumps(output['Event']))
                     success_counter += 1
 
             output_stats(evtx_file, success_counter, start_time)
@@ -292,6 +295,7 @@ if __name__ == "__main__":
     parser_fh = subparsers.add_parser('process_files')
     fh_parser_group = parser_fh.add_argument_group(title="Process evtx files")
     fh_parser_group.add_argument('--files', '-f', help="evtx file", nargs='+', required=True)
+    fh_parser_group.add_argument('--output', '-o', help="Absolute path to file where JSON output should be stored", required=False)
     fh_parser_group.set_defaults(func=process_files)
 
     # Parser for folder containing evtx files
